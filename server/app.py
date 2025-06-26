@@ -54,7 +54,7 @@ class SweetByID(Resource):
             return make_response({
                 'id': sweet.id,
                 'name': sweet.name
-                # test expects no vendor_sweets in this response
+
             }, 200)
         return make_response({'error': 'Sweet not found'}, 404)
 
