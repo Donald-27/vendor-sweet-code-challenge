@@ -38,7 +38,6 @@ class Vendor(db.Model, SerializerMixin):
     vendor_sweets = db.relationship('VendorSweet', backref='vendor', cascade='all, delete-orphan')
 
     # Add serialization
-    # Exclude nested vendor from vendor_sweets to prevent recursion
     serialize_rules = ('-vendor_sweets.vendor',)
 
     def __repr__(self):
@@ -55,7 +54,7 @@ class VendorSweet(db.Model, SerializerMixin):
     sweet_id = db.Column(db.Integer, db.ForeignKey('sweets.id'))
 
     # Add relationships
-    # (Handled via backrefs from Sweet and Vendor)
+  
 
     # Add serialization
     serialize_rules = (
