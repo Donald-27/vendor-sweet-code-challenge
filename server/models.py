@@ -21,7 +21,7 @@ class Sweet(db.Model, SerializerMixin):
     vendor_sweets = db.relationship('VendorSweet', backref='sweet', cascade='all, delete-orphan')
 
     # Add serialization
-    # Include vendor_sweets only when explicitly serialized (detail view)
+   
     serialize_rules = ('-vendor_sweets.sweet',)
 
     def __repr__(self):
