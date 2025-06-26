@@ -20,10 +20,6 @@ api = Api(app)
 def index():
     return '<h1>VendorSweets Code Challenge</h1>'
 
-# -------------------------------
-#           API ROUTES
-# -------------------------------
-
 class Vendors(Resource):
     def get(self):
         vendors = Vendor.query.all()
