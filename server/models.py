@@ -18,9 +18,12 @@ class Sweet(db.Model, SerializerMixin):
     name = db.Column(db.String)
 
     # Add relationship
-    
+    vendor_sweets = db.relationship('VendorSweet', backref='sweet', cascade='all, delete-orphan')
+
     # Add serialization
-    
+    # Include vendor_sweets only when explicitly serialized (detail view)
+    serialize_rules = ('-vendor_sweets.sweet',)
+
     def __repr__(self):
         return f'<Sweet {self.id}>'
 
@@ -32,9 +35,12 @@ class Vendor(db.Model, SerializerMixin):
     name = db.Column(db.String)
 
     # Add relationship
-    
+    vendor_sweets = db.relationship('VendorSweet', backref='vendor', cascade='all, delete-orphan')
+
     # Add serialization
-    
+    # Exclude nested vendor from vendor_sweets to prevent recursion
+    serialize_rules = ('-vendor_sweets.vendor',)
+
     def __repr__(self):
         return f'<Vendor {self.id}>'
 
@@ -45,11 +51,24 @@ class VendorSweet(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
 
+    vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'))
+    sweet_id = db.Column(db.Integer, db.ForeignKey('sweets.id'))
+
     # Add relationships
-    
+    # (Handled via backrefs from Sweet and Vendor)
+
     # Add serialization
-    
+    serialize_rules = (
+        'vendor', 'sweet',
+        '-vendor.vendor_sweets', '-sweet.vendor_sweets',
+    )
+
     # Add validation
-    
+    @validates('price')
+    def validate_price(self, key, value):
+        if type(value) is not int or value is None or value < 0:
+            raise ValueError('Price must be a non-negative integer.')
+        return value
+
     def __repr__(self):
         return f'<VendorSweet {self.id}>'
